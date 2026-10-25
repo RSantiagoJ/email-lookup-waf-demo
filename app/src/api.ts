@@ -146,9 +146,9 @@ export const ATTACKS: {
   {
     id: "harvest",
     label: "Directory Harvest",
-    rule: "rate-limit rule (IP + User-Agent)",
+    rule: "API Gateway burst throttle (+ WAF IP+User-Agent rate rule)",
     blurb:
-      "Walks the ID space to scrape the whole student email directory. Trips the rate limit.",
+      "Walks the ID space to scrape the whole directory. The gateway throttle 429s the flood instantly; the WAF rate rule backs it up.",
   },
   {
     id: "sqli",

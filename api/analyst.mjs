@@ -45,10 +45,11 @@ You are given a JSON snapshot: wafOn (shield on/off), requests (total lookups th
 the backend), emailsFound (emails actually returned), blocked (requests the WAF rejected at
 the EDGE, which never reached the backend), directorySize (total students), requestsPerMin
 and blockedPerMin (recent rates). It may also include an "event" object describing the
-most recent simulated attack: attack (harvest | sqli | exploit), rule (the WAF rule that
-targets it), sent, blocked, and harvested. When an event is present, name the attack in
-plain terms and say whether the shield stopped it: if wafOn and blocked>0, the named WAF
-rule dropped it at the edge; if wafOn is false, it reached the application unfiltered.
+most recent simulated attack: attack (harvest | sqli | exploit), rule (the control that
+targets it — a WAF rule or the API Gateway throttle), sent, blocked, and harvested. When
+an event is present, name the attack in plain terms and say whether it was stopped: if
+blocked>0, the named control dropped it at the edge (whether or not the shield is on); if
+blocked is 0 and wafOn is false, it reached the application unfiltered.
 A rising "blocked" with the shield ON means the firewall is stopping the attack at the
 edge before it reaches the directory. Interpret it for a non-technical executive. Be
 specific and calm. No markdown, no preamble.`;
@@ -70,7 +71,7 @@ const fallbackTriage = (c) => {
       exploit: "an exploit probe",
     };
     const name = names[e.attack] ?? "an attack";
-    if (c.wafOn && e.blocked > 0) {
+    if (e.blocked > 0) {
       return `${cap(name)} was stopped at the edge: ${e.blocked} of ${e.sent} requests blocked by the ${e.rule} before reaching the directory.${e.attack === "harvest" ? " The email harvest was cut off." : " The malicious payloads never touched the application."}`;
     }
     if (!c.wafOn) {

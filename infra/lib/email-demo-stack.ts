@@ -100,7 +100,15 @@ export class EmailDemoStack extends Stack {
     // --- REST API (WAF attaches to a REST API stage) -------------------
     const api = new apigateway.RestApi(this, "Api", {
       restApiName: "email-lookup-waf-demo",
-      deployOptions: { stageName: "prod" },
+      deployOptions: {
+        stageName: "prod",
+        // Always-on API Gateway burst throttle (a token bucket), independent of the WAF
+        // shield. This is the control that stops a FAST scrape on the spot (429) — where
+        // the WAF rate rule's ~1-min window lets the first burst overshoot. Dashboard
+        // polling stays well under this; only the attack bursts hit the ceiling.
+        throttlingRateLimit: 10, // steady-state requests/sec
+        throttlingBurstLimit: 20, // max instantaneous burst
+      },
       defaultCorsPreflightOptions: {
         allowOrigins: apigateway.Cors.ALL_ORIGINS,
         allowMethods: apigateway.Cors.ALL_METHODS,
