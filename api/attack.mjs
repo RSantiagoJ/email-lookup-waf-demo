@@ -62,6 +62,12 @@ const buildHarvest = () => {
       },
     });
   }
+  // Shuffle so the valid records aren't all front-loaded — the throttle / rate limit then
+  // catches most of them and only a fraction of the directory leaks (the honest result).
+  for (let i = reqs.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [reqs[i], reqs[j]] = [reqs[j], reqs[i]];
+  }
   return reqs;
 };
 

@@ -59,6 +59,10 @@ scripts/    enumerate (attack sim) + waf-on / waf-off toggles
   `rate-limit-apis-by-ip-useragent` rule) + AWS managed rule groups (SQLi, CommonRuleSet,
   KnownBadInputs, IpReputation). Deployed **unassociated** — the demo starts unprotected,
   and the dashboard toggle arms it live.
+- **API Gateway throttle**: an always-on burst throttle on the prod stage (**10 req/s,
+  burst 20**), independent of the WAF shield. This is what 429s a *fast* scrape on the spot
+  — the WAF rate rule's ~1-min window lets the first burst overshoot, so the two layers
+  complement each other. Dashboard polling stays well under the limit.
 
 ## Prerequisites (one-time)
 
@@ -127,8 +131,9 @@ cp arns.env.example arns.env   # fill WEBACL_ARN + STAGE_ARN from the cdk output
    then **Exploit Probe** — both are blocked **instantly** (managed rules match per request,
    no rate threshold), so the Attacker console flips to green `BLOCKED` lines, the **"Blocked
    at the edge"** tile climbs, and the **AI triage feed** (Claude) names the rule that
-   stopped each one. (Then **Directory Harvest** for the rate-limit story — click it twice:
-   the first burst fills the IP+User-Agent bucket, the second is fully blocked.)
+   stopped each one. (Then **Directory Harvest** — the API Gateway burst throttle 429s the
+   flood on the **first** click: "Blocked at the edge" jumps to ~280 while "emails exposed"
+   barely moves. The WAF's IP+User-Agent rate rule is the slower second layer behind it.)
 4. **Prove it's real.** Point at the **Real WAF blocks** panel — it lists the actual requests
    AWS WAF sampled and blocked (`GetSampledRequests`): source IP, path, and the rule. "This
    isn't a mock — that's AWS WAF's own record of dropping the attack." (Samples take up to
