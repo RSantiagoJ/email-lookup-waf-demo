@@ -55,14 +55,17 @@ scripts/    enumerate (attack sim) + waf-on / waf-off toggles
 - `POST /attack` — `{ attack: "harvest" | "sqli" | "exploit" }` fires a real attack at the
   endpoint from a Lambda (the dashboard "Launch an attack" buttons); each type trips a
   different WAF rule
-- **WAF**: rate limit **100 req / 5 min per IP + User-Agent** (the hero — mirrors prod's
-  `rate-limit-apis-by-ip-useragent` rule) + AWS managed rule groups (SQLi, CommonRuleSet,
+- **WAF**: rate limit **100 req / 5 min per IP + User-Agent**, scoped to `/email-lookup`
+  (the hero — mirrors prod's `rate-limit-apis-by-ip-useragent` rule; scoping keeps the
+  dashboard's own polling from tripping it) + AWS managed rule groups (SQLi, CommonRuleSet,
   KnownBadInputs, IpReputation). Deployed **unassociated** — the demo starts unprotected,
   and the dashboard toggle arms it live.
-- **API Gateway throttle**: an always-on burst throttle on the prod stage (**10 req/s,
-  burst 20**), independent of the WAF shield. This is what 429s a *fast* scrape on the spot
-  — the WAF rate rule's ~1-min window lets the first burst overshoot, so the two layers
-  complement each other. Dashboard polling stays well under the limit.
+- **API Gateway throttle**: an always-on burst throttle scoped to the **`/email-lookup`**
+  method (**10 req/s, burst 20**), independent of the WAF shield. This is what 429s a *fast*
+  scrape on the spot — the WAF rate rule's ~1-min window lets the first burst overshoot, so
+  the two layers complement each other. Scoped to the one endpoint so the dashboard's own
+  polling is never throttled; API Gateway's 4xx/5xx responses also carry CORS headers so a
+  429 is handled by the app, not an opaque browser CORS failure.
 
 ## Prerequisites (one-time)
 
