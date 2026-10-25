@@ -63,11 +63,14 @@ export class EmailDemoStack extends Stack {
     const resetFn = mkFn("ResetFn", "reset.handler");
     const reportFn = mkFn("ReportFn", "report.handler");
     const seedFn = mkFn("SeedFn", "seed.handler");
+    // The Claude key lives in SSM Parameter Store (SecureString), read by the analyst at
+    // runtime — so `cdk deploy` never needs it and never wipes it. Set it once with:
+    //   aws ssm put-parameter --name <this> --type SecureString --value <key> --overwrite
+    const ANTHROPIC_KEY_PARAM = "/email-lookup-waf-demo/anthropic-api-key";
     const analystFn = mkFn("AnalystFn", "analyst.handler", {
       BEDROCK_MODEL_ID,
-      // Direct Anthropic Claude API (preferred provider — see analyst.mjs). The key is
-      // read from the deploy shell so it never lands in source or chat; leave it unset
-      // to build/test on the offline fallback, then set it and redeploy to go live.
+      ANTHROPIC_API_KEY_PARAM: ANTHROPIC_KEY_PARAM,
+      // Optional direct override; normally empty so the SSM value is used.
       ANTHROPIC_API_KEY: process.env.ANTHROPIC_API_KEY ?? "",
       ANTHROPIC_MODEL: process.env.ANTHROPIC_MODEL ?? "claude-haiku-5-5",
     });
@@ -88,6 +91,23 @@ export class EmailDemoStack extends Stack {
           `arn:aws:bedrock:*::foundation-model/*`,
           `arn:aws:bedrock:*:${this.account}:inference-profile/*`,
         ],
+      }),
+    );
+
+    // Read the Claude key from SSM at runtime (SecureString -> also needs kms:Decrypt on
+    // the default aws/ssm key).
+    analystFn.addToRolePolicy(
+      new iam.PolicyStatement({
+        actions: ["ssm:GetParameter"],
+        resources: [
+          `arn:aws:ssm:${this.region}:${this.account}:parameter${ANTHROPIC_KEY_PARAM}`,
+        ],
+      }),
+    );
+    analystFn.addToRolePolicy(
+      new iam.PolicyStatement({
+        actions: ["kms:Decrypt"],
+        resources: ["*"],
       }),
     );
 

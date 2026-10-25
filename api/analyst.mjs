@@ -18,6 +18,7 @@ import {
   BedrockRuntimeClient,
   ConverseCommand,
 } from "@aws-sdk/client-bedrock-runtime";
+import { SSMClient, GetParameterCommand } from "@aws-sdk/client-ssm";
 
 const client = new BedrockRuntimeClient({});
 const MODEL_ID = process.env.BEDROCK_MODEL_ID; // Bedrock model (fallback provider)
@@ -26,8 +27,29 @@ const MODEL_ID = process.env.BEDROCK_MODEL_ID; // Bedrock model (fallback provid
 // deploy time (empty when unset -> we fall through to Bedrock, then offline text). The
 // default model is the cheapest tier and max_tokens is small, so a triage line costs a
 // fraction of a cent and a few dollars of credit lasts many demos.
-const ANTHROPIC_API_KEY = process.env.ANTHROPIC_API_KEY;
+const ANTHROPIC_API_KEY = process.env.ANTHROPIC_API_KEY; // optional direct override
+const ANTHROPIC_KEY_PARAM = process.env.ANTHROPIC_API_KEY_PARAM; // SSM SecureString name
 const ANTHROPIC_MODEL = process.env.ANTHROPIC_MODEL ?? "claude-haiku-5-5";
+
+// Resolve the Claude key from SSM Parameter Store at runtime so deploys never touch it.
+// An ANTHROPIC_API_KEY env var, if set, wins as a direct override. Cache only a real key
+// so a `put-parameter` done after deploy is picked up on the next call.
+const ssm = new SSMClient({});
+let cachedKey = ANTHROPIC_API_KEY ? ANTHROPIC_API_KEY.trim() : null;
+const getAnthropicKey = async () => {
+  if (cachedKey) return cachedKey;
+  if (!ANTHROPIC_KEY_PARAM) return "";
+  try {
+    const out = await ssm.send(
+      new GetParameterCommand({ Name: ANTHROPIC_KEY_PARAM, WithDecryption: true }),
+    );
+    const v = (out.Parameter?.Value ?? "").trim();
+    if (v) cachedKey = v;
+    return v;
+  } catch {
+    return ""; // not set yet / no access -> fall through to the offline fallback
+  }
+};
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -103,11 +125,11 @@ const fallbackChat = (c, q) =>
 
 // One call to the Anthropic Messages API. Returns the concatenation of ALL text blocks
 // (not just the first — a leading empty/non-text block must not drop a valid completion).
-const anthropicOnce = async (userText) => {
+const anthropicOnce = async (userText, apiKey) => {
   const res = await fetch("https://api.anthropic.com/v1/messages", {
     method: "POST",
     headers: {
-      "x-api-key": ANTHROPIC_API_KEY,
+      "x-api-key": apiKey,
       "anthropic-version": "2023-06-01",
       "content-type": "application/json",
     },
@@ -137,11 +159,11 @@ const anthropicOnce = async (userText) => {
 // Call Claude, retrying ONCE on an empty completion or a transient (429/5xx) error, so a
 // one-off blip doesn't drop us to the offline fallback. A hard failure (auth/bad request)
 // is not retried. Throws after the second miss -> the handler serves the fallback.
-const askClaude = async (userText) => {
+const askClaude = async (userText, apiKey) => {
   let lastErr;
   for (let attempt = 1; attempt <= 2; attempt++) {
     try {
-      const text = await anthropicOnce(userText);
+      const text = await anthropicOnce(userText, apiKey);
       if (text) return text;
       lastErr = new Error("empty response");
     } catch (err) {
@@ -193,9 +215,10 @@ export const handler = async (event) => {
   let text = "";
   let source = "fallback";
   try {
-    if (ANTHROPIC_API_KEY) {
+    const apiKey = await getAnthropicKey();
+    if (apiKey) {
       source = "claude";
-      text = await askClaude(userText);
+      text = await askClaude(userText, apiKey);
     } else if (MODEL_ID) {
       source = "bedrock";
       text = await askBedrock(userText);
