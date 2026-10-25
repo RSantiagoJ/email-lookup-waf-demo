@@ -1,0 +1,402 @@
+[
+  {
+    "id": "10000000",
+    "last": "Ivanov",
+    "first": "Emerson",
+    "birthday": "10/20/2002",
+    "email": "emerson.ivanov01@grad.demo.edu",
+    "email_type": "DemoU-Grad"
+  },
+  {
+    "id": "10000001",
+    "last": "Nguyen",
+    "first": "Hayden",
+    "birthday": "04/28/1998",
+    "email": "hayden.nguyen01@students.demo.edu",
+    "email_type": "DemoU-Student"
+  },
+  {
+    "id": "10000002",
+    "last": "Costa",
+    "first": "Kendall",
+    "birthday": "02/26/1998",
+    "email": "kendall.costa01@students.demo.edu",
+    "email_type": "DemoU-Student"
+  },
+  {
+    "id": "10000003",
+    "last": "Tanaka",
+    "first": "Blake",
+    "birthday": "11/02/1998",
+    "email": "blake.tanaka01@students.demo.edu",
+    "email_type": "DemoU-Student"
+  },
+  {
+    "id": "10000004",
+    "last": "Khan",
+    "first": "Parker",
+    "birthday": "05/19/1997",
+    "email": "parker.khan01@grad.demo.edu",
+    "email_type": "DemoU-Grad"
+  },
+  {
+    "id": "10000005",
+    "last": "Kim",
+    "first": "Jordan",
+    "birthday": "04/15/2003",
+    "email": "jordan.kim01@grad.demo.edu",
+    "email_type": "DemoU-Grad"
+  },
+  {
+    "id": "10000006",
+    "last": "Yamamoto",
+    "first": "Alex",
+    "birthday": "09/24/2002",
+    "email": "alex.yamamoto01@grad.demo.edu",
+    "email_type": "DemoU-Grad"
+  },
+  {
+    "id": "10000007",
+    "last": "Okafor",
+    "first": "Skyler",
+    "birthday": "12/04/2000",
+    "email": "skyler.okafor01@grad.demo.edu",
+    "email_type": "DemoU-Grad"
+  },
+  {
+    "id": "10000008",
+    "last": "Silva",
+    "first": "Blake",
+    "birthday": "01/05/2000",
+    "email": "blake.silva01@students.demo.edu",
+    "email_type": "DemoU-Student"
+  },
+  {
+    "id": "10000009",
+    "last": "Kim",
+    "first": "Dakota",
+    "birthday": "09/17/2002",
+    "email": "dakota.kim01@students.demo.edu",
+    "email_type": "DemoU-Student"
+  },
+  {
+    "id": "10000010",
+    "last": "Dubois",
+    "first": "Skyler",
+    "birthday": "04/03/1996",
+    "email": "skyler.dubois01@grad.demo.edu",
+    "email_type": "DemoU-Grad"
+  },
+  {
+    "id": "10000011",
+    "last": "Khan",
+    "first": "Cameron",
+    "birthday": "03/12/2004",
+    "email": "cameron.khan01@students.demo.edu",
+    "email_type": "DemoU-Student"
+  },
+  {
+    "id": "10000012",
+    "last": "Rivera",
+    "first": "Jordan",
+    "birthday": "07/28/1999",
+    "email": "jordan.rivera01@students.demo.edu",
+    "email_type": "DemoU-Student"
+  },
+  {
+    "id": "10000013",
+    "last": "Novak",
+    "first": "Rowan",
+    "birthday": "05/01/2002",
+    "email": "rowan.novak01@students.demo.edu",
+    "email_type": "DemoU-Student"
+  },
+  {
+    "id": "10000014",
+    "last": "Larsen",
+    "first": "Logan",
+    "birthday": "09/15/1997",
+    "email": "logan.larsen01@grad.demo.edu",
+    "email_type": "DemoU-Grad"
+  },
+  {
+    "id": "10000015",
+    "last": "Dubois",
+    "first": "Parker",
+    "birthday": "03/01/2000",
+    "email": "parker.dubois01@students.demo.edu",
+    "email_type": "DemoU-Student"
+  },
+  {
+    "id": "10000016",
+    "last": "Rossi",
+    "first": "Quinn",
+    "birthday": "10/17/2005",
+    "email": "quinn.rossi01@students.demo.edu",
+    "email_type": "DemoU-Student"
+  },
+  {
+    "id": "10000017",
+    "last": "Olsen",
+    "first": "Taylor",
+    "birthday": "02/03/2001",
+    "email": "taylor.olsen01@grad.demo.edu",
+    "email_type": "DemoU-Grad"
+  },
+  {
+    "id": "10000018",
+    "last": "Costa",
+    "first": "Skyler",
+    "birthday": "08/25/2003",
+    "email": "skyler.costa01@students.demo.edu",
+    "email_type": "DemoU-Student"
+  },
+  {
+    "id": "10000019",
+    "last": "Nguyen",
+    "first": "Quinn",
+    "birthday": "11/10/1996",
+    "email": "quinn.nguyen01@students.demo.edu",
+    "email_type": "DemoU-Student"
+  },
+  {
+    "id": "10000020",
+    "last": "Ivanov",
+    "first": "Kendall",
+    "birthday": "07/13/1996",
+    "email": "kendall.ivanov01@students.demo.edu",
+    "email_type": "DemoU-Student"
+  },
+  {
+    "id": "10000021",
+    "last": "Rivera",
+    "first": "Dakota",
+    "birthday": "08/18/2005",
+    "email": "dakota.rivera01@grad.demo.edu",
+    "email_type": "DemoU-Grad"
+  },
+  {
+    "id": "10000022",
+    "last": "Mbeki",
+    "first": "Hayden",
+    "birthday": "03/03/1998",
+    "email": "hayden.mbeki01@grad.demo.edu",
+    "email_type": "DemoU-Grad"
+  },
+  {
+    "id": "10000023",
+    "last": "Khan",
+    "first": "Quinn",
+    "birthday": "09/09/1998",
+    "email": "quinn.khan01@grad.demo.edu",
+    "email_type": "DemoU-Grad"
+  },
+  {
+    "id": "10000024",
+    "last": "Ferreira",
+    "first": "Kendall",
+    "birthday": "07/22/1996",
+    "email": "kendall.ferreira01@students.demo.edu",
+    "email_type": "DemoU-Student"
+  },
+  {
+    "id": "10000025",
+    "last": "Kim",
+    "first": "Harper",
+    "birthday": "03/01/2005",
+    "email": "harper.kim01@grad.demo.edu",
+    "email_type": "DemoU-Grad"
+  },
+  {
+    "id": "10000026",
+    "last": "Garcia",
+    "first": "Jamie",
+    "birthday": "10/08/1998",
+    "email": "jamie.garcia01@students.demo.edu",
+    "email_type": "DemoU-Student"
+  },
+  {
+    "id": "10000027",
+    "last": "Garcia",
+    "first": "Jordan",
+    "birthday": "10/01/1996",
+    "email": "jordan.garcia01@students.demo.edu",
+    "email_type": "DemoU-Student"
+  },
+  {
+    "id": "10000028",
+    "last": "Chen",
+    "first": "Blake",
+    "birthday": "10/09/1997",
+    "email": "blake.chen01@grad.demo.edu",
+    "email_type": "DemoU-Grad"
+  },
+  {
+    "id": "10000029",
+    "last": "Rossi",
+    "first": "Reese",
+    "birthday": "09/19/2002",
+    "email": "reese.rossi01@students.demo.edu",
+    "email_type": "DemoU-Student"
+  },
+  {
+    "id": "10000030",
+    "last": "Silva",
+    "first": "Rowan",
+    "birthday": "11/11/2003",
+    "email": "rowan.silva01@grad.demo.edu",
+    "email_type": "DemoU-Grad"
+  },
+  {
+    "id": "10000031",
+    "last": "Chen",
+    "first": "Jordan",
+    "birthday": "07/26/2001",
+    "email": "jordan.chen01@grad.demo.edu",
+    "email_type": "DemoU-Grad"
+  },
+  {
+    "id": "10000032",
+    "last": "Tanaka",
+    "first": "Skyler",
+    "birthday": "05/12/1996",
+    "email": "skyler.tanaka01@grad.demo.edu",
+    "email_type": "DemoU-Grad"
+  },
+  {
+    "id": "10000033",
+    "last": "Mbeki",
+    "first": "Alex",
+    "birthday": "11/19/2002",
+    "email": "alex.mbeki01@grad.demo.edu",
+    "email_type": "DemoU-Grad"
+  },
+  {
+    "id": "10000034",
+    "last": "Rivera",
+    "first": "Harper",
+    "birthday": "04/05/2001",
+    "email": "harper.rivera01@grad.demo.edu",
+    "email_type": "DemoU-Grad"
+  },
+  {
+    "id": "10000035",
+    "last": "Rivera",
+    "first": "Casey",
+    "birthday": "01/05/2003",
+    "email": "casey.rivera01@students.demo.edu",
+    "email_type": "DemoU-Student"
+  },
+  {
+    "id": "10000036",
+    "last": "Nguyen",
+    "first": "Kendall",
+    "birthday": "02/24/1996",
+    "email": "kendall.nguyen01@students.demo.edu",
+    "email_type": "DemoU-Student"
+  },
+  {
+    "id": "10000037",
+    "last": "Haddad",
+    "first": "Logan",
+    "birthday": "05/18/2002",
+    "email": "logan.haddad01@students.demo.edu",
+    "email_type": "DemoU-Student"
+  },
+  {
+    "id": "10000038",
+    "last": "Costa",
+    "first": "Skyler",
+    "birthday": "01/02/1996",
+    "email": "skyler.costa02@students.demo.edu",
+    "email_type": "DemoU-Student"
+  },
+  {
+    "id": "10000039",
+    "last": "Ivanov",
+    "first": "Quinn",
+    "birthday": "09/11/2003",
+    "email": "quinn.ivanov01@students.demo.edu",
+    "email_type": "DemoU-Student"
+  },
+  {
+    "id": "10000040",
+    "last": "Kim",
+    "first": "Taylor",
+    "birthday": "02/18/2003",
+    "email": "taylor.kim01@students.demo.edu",
+    "email_type": "DemoU-Student"
+  },
+  {
+    "id": "10000041",
+    "last": "Mbeki",
+    "first": "Blake",
+    "birthday": "09/03/1997",
+    "email": "blake.mbeki01@grad.demo.edu",
+    "email_type": "DemoU-Grad"
+  },
+  {
+    "id": "10000042",
+    "last": "Rossi",
+    "first": "Elliot",
+    "birthday": "07/20/1999",
+    "email": "elliot.rossi01@grad.demo.edu",
+    "email_type": "DemoU-Grad"
+  },
+  {
+    "id": "10000043",
+    "last": "Chen",
+    "first": "Dakota",
+    "birthday": "04/10/2001",
+    "email": "dakota.chen01@students.demo.edu",
+    "email_type": "DemoU-Student"
+  },
+  {
+    "id": "10000044",
+    "last": "Dubois",
+    "first": "Casey",
+    "birthday": "07/12/1998",
+    "email": "casey.dubois01@students.demo.edu",
+    "email_type": "DemoU-Student"
+  },
+  {
+    "id": "10000045",
+    "last": "Mbeki",
+    "first": "Riley",
+    "birthday": "08/21/1997",
+    "email": "riley.mbeki01@students.demo.edu",
+    "email_type": "DemoU-Student"
+  },
+  {
+    "id": "10000046",
+    "last": "Chen",
+    "first": "Skyler",
+    "birthday": "09/19/2004",
+    "email": "skyler.chen01@grad.demo.edu",
+    "email_type": "DemoU-Grad"
+  },
+  {
+    "id": "10000047",
+    "last": "Patel",
+    "first": "Reese",
+    "birthday": "12/08/2002",
+    "email": "reese.patel01@grad.demo.edu",
+    "email_type": "DemoU-Grad"
+  },
+  {
+    "id": "10000048",
+    "last": "Larsen",
+    "first": "Harper",
+    "birthday": "08/02/2004",
+    "email": "harper.larsen01@grad.demo.edu",
+    "email_type": "DemoU-Grad"
+  },
+  {
+    "id": "10000049",
+    "last": "Khan",
+    "first": "Finley",
+    "birthday": "08/03/1997",
+    "email": "finley.khan01@students.demo.edu",
+    "email_type": "DemoU-Student"
+  }
+]

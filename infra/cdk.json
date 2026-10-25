@@ -1,0 +1,11 @@
+{
+  "app": "node bin/app.js",
+  "watch": {
+    "include": ["**"],
+    "exclude": ["README.md", "cdk*.json", "**/*.d.ts", "**/*.js", "node_modules"]
+  },
+  "context": {
+    "@aws-cdk/customresources:installLatestAwsSdkDefault": false,
+    "@aws-cdk/aws-lambda:recognizeLayerVersion": true
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "EmailLookupWafDemo": {
+    "ApiEndpoint4F160690": "https://oeaqizaem1.execute-api.us-east-1.amazonaws.com/prod/",
+    "ApiStageArn": "arn:aws:apigateway:us-east-1::/restapis/oeaqizaem1/stages/prod",
+    "StudentsTableName": "EmailLookupWafDemo-StudentsTableDAB56938-1VNI8B9OAOII1",
+    "ApiUrl": "https://oeaqizaem1.execute-api.us-east-1.amazonaws.com/prod/",
+    "StatsTableName": "EmailLookupWafDemo-StatsTable8BDA1AC3-B98OEAU8LOU7",
+    "WebAclArn": "arn:aws:wafv2:us-east-1:438920434591:regional/webacl/email-lookup-waf-demo/0fcb8319-d68c-4308-9e3b-0f71f7bd1c74",
+    "BedrockModelId": "us.anthropic.claude-haiku-5-5",
+    "WafLogGroupName": "aws-waf-logs-email-demo"
+  }
+}

@@ -1,0 +1,24 @@
+{
+  "name": "email-lookup-waf-demo-infra",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "bin": {
+    "infra": "bin/app.js"
+  },
+  "scripts": {
+    "build": "tsc",
+    "synth": "cdk synth",
+    "deploy": "cdk deploy --require-approval never",
+    "destroy": "cdk destroy --force"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.0",
+    "aws-cdk": "^2.173.0",
+    "typescript": "~5.6.0"
+  },
+  "dependencies": {
+    "aws-cdk-lib": "^2.173.0",
+    "constructs": "^10.4.0"
+  }
+}
