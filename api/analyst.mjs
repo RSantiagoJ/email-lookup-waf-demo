@@ -101,7 +101,9 @@ const fallbackTriage = (c) => {
 const fallbackChat = (c, q) =>
   `(offline analyst) Right now: shield ${c.wafOn ? "ON" : "OFF"}, ${c.requests} total lookups, ${c.emailsFound} emails exposed, ${Math.round(c.blocked ?? 0)} blocked at the edge, ~${Math.round(c.requestsPerMin ?? 0)}/min. Enable Bedrock model access to get a full answer to: "${q}".`;
 
-const askClaude = async (userText) => {
+// One call to the Anthropic Messages API. Returns the concatenation of ALL text blocks
+// (not just the first — a leading empty/non-text block must not drop a valid completion).
+const anthropicOnce = async (userText) => {
   const res = await fetch("https://api.anthropic.com/v1/messages", {
     method: "POST",
     headers: {
@@ -118,10 +120,36 @@ const askClaude = async (userText) => {
   });
   if (!res.ok) {
     const detail = await res.text().catch(() => "");
-    throw new Error(`anthropic ${res.status}: ${detail.slice(0, 200)}`);
+    const err = new Error(`anthropic ${res.status}: ${detail.slice(0, 200)}`);
+    // 429 (rate limit) and 5xx (incl. 529 overloaded) are worth one retry; 4xx auth/
+    // request errors are not.
+    err.retryable = res.status === 429 || res.status >= 500;
+    throw err;
   }
   const j = await res.json();
-  return (j?.content?.[0]?.text ?? "").trim();
+  return (j?.content ?? [])
+    .filter((b) => b?.type === "text" && typeof b.text === "string")
+    .map((b) => b.text)
+    .join("")
+    .trim();
+};
+
+// Call Claude, retrying ONCE on an empty completion or a transient (429/5xx) error, so a
+// one-off blip doesn't drop us to the offline fallback. A hard failure (auth/bad request)
+// is not retried. Throws after the second miss -> the handler serves the fallback.
+const askClaude = async (userText) => {
+  let lastErr;
+  for (let attempt = 1; attempt <= 2; attempt++) {
+    try {
+      const text = await anthropicOnce(userText);
+      if (text) return text;
+      lastErr = new Error("empty response");
+    } catch (err) {
+      lastErr = err;
+      if (err?.retryable === false) break; // don't retry a hard failure
+    }
+  }
+  throw lastErr ?? new Error("empty response");
 };
 
 const askBedrock = async (userText) => {
