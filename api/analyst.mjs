@@ -30,6 +30,10 @@ const MODEL_ID = process.env.BEDROCK_MODEL_ID; // Bedrock model (fallback provid
 const ANTHROPIC_API_KEY = process.env.ANTHROPIC_API_KEY; // optional direct override
 const ANTHROPIC_KEY_PARAM = process.env.ANTHROPIC_API_KEY_PARAM; // SSM SecureString name
 const ANTHROPIC_MODEL = process.env.ANTHROPIC_MODEL ?? "claude-haiku-5-5";
+// Output budget per mode: triage is a one/two-sentence feed line (tiny, cheap), while an
+// "Ask the Firewall" chat answer needs room to finish a thought without clipping.
+const TRIAGE_MAX_TOKENS = 160;
+const CHAT_MAX_TOKENS = 700;
 
 // Resolve the Claude key from SSM Parameter Store at runtime so deploys never touch it.
 // An ANTHROPIC_API_KEY env var, if set, wins as a direct override. Cache only a real key
@@ -125,7 +129,9 @@ const fallbackChat = (c, q) =>
 
 // One call to the Anthropic Messages API. Returns the concatenation of ALL text blocks
 // (not just the first — a leading empty/non-text block must not drop a valid completion).
-const anthropicOnce = async (userText, apiKey) => {
+// maxTokens is caller-supplied so triage stays tiny while an exec chat answer has room to
+// finish a thought (see askClaude / the handler).
+const anthropicOnce = async (userText, apiKey, maxTokens) => {
   const res = await fetch("https://api.anthropic.com/v1/messages", {
     method: "POST",
     headers: {
@@ -135,7 +141,14 @@ const anthropicOnce = async (userText, apiKey) => {
     },
     body: JSON.stringify({
       model: ANTHROPIC_MODEL,
-      max_tokens: 160, // one or two sentences — keeps output cost tiny
+      max_tokens: maxTokens,
+      // Haiku 5.5 runs adaptive thinking ON by default, and thinking tokens are drawn
+      // from max_tokens — which starves (and clips) the visible answer. This is a plain
+      // narration/Q&A task that needs no reasoning, so disable thinking: every token goes
+      // to the answer, and it's cheaper and faster for a live demo. "disabled" is accepted
+      // on Haiku 5.5 at effort "high" or below; "low" is the cheapest.
+      thinking: { type: "disabled" },
+      output_config: { effort: "low" },
       system: SYSTEM,
       messages: [{ role: "user", content: userText }],
     }),
@@ -159,11 +172,11 @@ const anthropicOnce = async (userText, apiKey) => {
 // Call Claude, retrying ONCE on an empty completion or a transient (429/5xx) error, so a
 // one-off blip doesn't drop us to the offline fallback. A hard failure (auth/bad request)
 // is not retried. Throws after the second miss -> the handler serves the fallback.
-const askClaude = async (userText, apiKey) => {
+const askClaude = async (userText, apiKey, maxTokens) => {
   let lastErr;
   for (let attempt = 1; attempt <= 2; attempt++) {
     try {
-      const text = await anthropicOnce(userText, apiKey);
+      const text = await anthropicOnce(userText, apiKey, maxTokens);
       if (text) return text;
       lastErr = new Error("empty response");
     } catch (err) {
@@ -209,16 +222,17 @@ export const handler = async (event) => {
 
   const userText =
     mode === "chat"
-      ? `Live snapshot: ${JSON.stringify(ctx)}\n\nExecutive question: ${question}`
+      ? `Live snapshot: ${JSON.stringify(ctx)}\n\nExecutive question: ${question}\n\nAnswer in at most 4 short sentences of plain prose — no bullet points, no headings. Finish every sentence.`
       : `Live snapshot: ${JSON.stringify(ctx)}\n\nNarrate what is happening in one or two sentences.`;
 
   let text = "";
   let source = "fallback";
   try {
     const apiKey = await getAnthropicKey();
+    const maxTokens = mode === "chat" ? CHAT_MAX_TOKENS : TRIAGE_MAX_TOKENS;
     if (apiKey) {
       source = "claude";
-      text = await askClaude(userText, apiKey);
+      text = await askClaude(userText, apiKey, maxTokens);
     } else if (MODEL_ID) {
       source = "bedrock";
       text = await askBedrock(userText);
