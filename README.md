@@ -1,13 +1,15 @@
-# Email Lookup — AWS WAF + Bedrock Demo
+# Email Lookup — AWS WAF + AI Security Analyst Demo
 
 An innovation-sprint demo: **AWS WAF** shielding a genuinely public, student-facing
-**email lookup** app, with **Amazon Bedrock** acting as a live AI security analyst on top.
+**email lookup** app, with **Claude** acting as a live AI security analyst on top. The analyst
+runs on the direct Claude API today and is built to switch to **Amazon Bedrock** (see
+[Prerequisites](#prerequisites-one-time) for why).
 
 The app is modeled on a real public university email-lookup tool — you enter a last name,
 a date of birth, and a Student/HR ID, and it returns your campus email. Because that kind
 of endpoint is **public and returns personal data (emails)**, it is a textbook target for
 scraping. This demo shows the attack happening and the WAF stopping it — narrated in plain
-English by Bedrock.
+English by the AI analyst.
 
 > **All data here is 100% fake.** The student directory is generated
 > (`data/generate-seed.mjs`) with invented names, a tidy block of fake IDs, synthetic
@@ -25,7 +27,7 @@ English by Bedrock.
   each attack, an **"Ask the Firewall"** chat panel, and a **Toolbox** of copy-to-clipboard
   AWS commands for this deployment.
 - Run the demo **shield OFF** first: the directory gets scraped wide open. Then flip the
-  **shield ON** live: the WAF rate limit cuts the scrape off at the edge. Bedrock explains
+  **shield ON** live: the WAF rate limit cuts the scrape off at the edge. The AI analyst explains
   both.
 
 ### Where this lives in "real" AWS (talk track)
@@ -38,7 +40,7 @@ over the WAF log group) or **CloudWatch Logs Insights**. Keep a console window o
 
 ```
 app/        Vite + React + Mantine — public lookup page (/) + security dashboard (/security)
-api/        Lambda handlers (nodejs22.x): lookup, stats, reset, seed, analyst (Bedrock)
+api/        Lambda handlers (nodejs22.x): lookup, stats, reset, seed, analyst (Claude API → Bedrock → offline fallback)
 infra/      AWS CDK (TypeScript): DynamoDB, REST API, WAF web ACL + logging, Bedrock IAM
 data/       fake-student seed generator -> students.json (copied into api/)
 scripts/    enumerate (attack sim) + waf-on / waf-off toggles
@@ -47,7 +49,7 @@ scripts/    enumerate (attack sim) + waf-on / waf-off toggles
 - `POST /email-lookup` — `{ last, birthday, student_id, emplid }` -> `{ email, email_type, result_code }`
 - `GET  /stats` — counters for the dashboard
 - `POST /reset` — zero the counters
-- `POST /analyst` — Bedrock triage / chat (`{ mode, context, question }`)
+- `POST /analyst` — AI triage / chat (`{ mode, context, question }`)
 - `POST /report` — the attack script reports its edge-block tally (`{ blocked, harvested }`)
   so the dashboard + triage can surface blocks (which never reach the backend)
 - `GET  /waf` — live WAF association state (`{ associated }`) for the dashboard shield light
